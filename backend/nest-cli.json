@@ -1,0 +1,16 @@
+{
+  "projects": {
+    "db-utilities": {
+      "type": "library",
+      "root": "libraries/db-utilities",
+      "entryFile": "index",
+      "sourceRoot": "libraries/db-utilities/src",
+      "compilerOptions": {
+        "tsConfigPath": "libraries/db-utilities/tsconfig.json"
+      }
+    }
+  },
+  "compilerOptions": {
+    "webpack": true
+  }
+}
