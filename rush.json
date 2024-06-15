@@ -412,6 +412,11 @@
     {
       "packageName": "user-authentication",
       "projectFolder": "backend/user-authentication"
+    },
+    {
+      "packageName": "db-utilities",
+      "projectFolder": "backend/db-utilities"
     }
+
   ]
 }
