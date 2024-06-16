@@ -1,72 +1,64 @@
-import mongoose, { Connection, Mongoose, model } from "mongoose";
-import { UserSchema } from "../models/Auth/User/user.schema";
-import { User } from "../models/Auth/User/user.model";
+import { Model } from 'mongoose';
+import { UserSchema } from '../models/Auth/User/user.schema';
+import { User } from '../models/Auth/User/user.model';
+import { CreateUserDTO, UserLoginDTO } from 'src/models/Auth/User/user.dto';
+import * as bcrypt from 'bcrypt';
+import { BadRequestException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 
-
-
-
+@Injectable()
 export class UserDBProvider {
+  private readonly logger = new Logger(UserDBProvider.name);
+  private readonly saltOrRound = 10;
 
-    private readonly models = new Map<String,any>();
+  constructor(@InjectModel('User') private userModel: Model<typeof UserSchema>) {}
 
-    constructor(
-        private readonly dbConnection : Mongoose
-    ){
-        const USER_MODEL = this.dbConnection.model('User',UserSchema);
-        USER_MODEL.findOneAndUpdate()
-        this.models.set("USER_MODEL",USER_MODEL);
+  public async addUser(user: CreateUserDTO): Promise<User | any> {
+    try {
+      const userDetails : any = await this.userModel.findOne({ email: user.email }).exec();
+      this.logger.log('userDetails', userDetails);
+      if (!userDetails) {
+        const salt = await bcrypt.genSalt(this.saltOrRound);
+        user.password = await bcrypt.hash(user.password, salt);
+        const data = new this.userModel(user);
+        this.logger.log('data', data);
+        return data.save();
+      } else {
+        throw new BadRequestException(`${user.email} already exist`);
+      }
+    } catch (error) {
+      throw error;
     }
+  }
 
-    public async addUser(user : User){
-        
-        try{
-            const UserModel = this.models.get('USER_MODEL');
-            const userDetails = UserModel.findOne({email:user.email});
-            if(userDetails){
-                const data = new UserModel(user);
-                return data.save()
-            }
-            else {
-                throw new Error (`${user.email} already exist`)
-            }
-            
+  public async findUser(user: UserLoginDTO): Promise<User> {
+    try {
+      const userDetails :any = await this.userModel.findOne({ email: user.email }).exec();
+      if (user) {
+        const isMatch = await bcrypt.compare(userDetails.password, user.password);
+        if (isMatch) {
+          return userDetails as User;
+        } else {
+          throw new UnauthorizedException(`User name or password doesn't match`);
         }
-        catch(error){
-            throw error
-        }
+      } else {
+        throw new BadRequestException(`${user.email} not found`);
+      }
+    } catch (error) {
+      throw error;
     }
+  }
 
-    public async findUser(email:string):Promise<User>{
-        try{
-            const UserModel = this.models.get('USER_MODEL');
-            const user = UserModel.findOne({email:email});
-            if(user){
-                return user;
-            }
-            else {
-                throw new Error (`${email} not found`)
-            }
-        }
-        catch(error){
-            throw error
-        }
-        
+  public async updateUser(user: User): Promise<User | any > {
+    try {
+      const userDetail = await this.userModel.findByIdAndUpdate(user._id, user, { new: false }).exec();
+      if (userDetail) {
+        return userDetail;
+      } else {
+        throw new BadRequestException(`${user.email} not found`);
+      }
+    } catch (error) {
+      throw error;
     }
-
-    public async updateUser(user:User):Promise<User>{
-        try{
-            const UserModel = this.models.get('USER_MODEL');
-            const userDetail = UserModel.findOneAndUpdate({email:user.email},user,{new:false});
-            if(userDetail){
-                return userDetail;
-            }
-            else {
-                throw new Error (`${user.email} not found`)
-            }
-        }
-        catch(error){
-            throw error
-        }
-        
-    }
+  }
 }

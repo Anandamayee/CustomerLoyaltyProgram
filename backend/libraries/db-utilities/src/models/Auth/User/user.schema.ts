@@ -1,9 +1,9 @@
-import mongoose from "mongoose";
+import { Schema } from "mongoose";
 import { Role } from "./Role.enum";
+import { User } from "./user.model";
 
 
-export const UserSchema = new mongoose.Schema({
-
+export const UserSchema = new Schema({
     name :{
         type:String,
         require:true,
@@ -25,8 +25,9 @@ export const UserSchema = new mongoose.Schema({
         type:String,
         require:true
     },
-    Role:{
-        type:Role,
+    role:{
+        type:String,
+        enum:Role,
         require:false
     }
 

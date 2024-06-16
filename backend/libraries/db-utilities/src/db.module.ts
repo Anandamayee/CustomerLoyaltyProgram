@@ -1,25 +1,36 @@
 import { Global, Module } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { DBConnectionProvider } from "./DbInstance.provider";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import {  getMongoConfig, models } from "./DbInstance.providers";
+import { MongooseModule } from "@nestjs/mongoose";
+import { UserDBProvider } from "./dbProviders/userDBProvider";
 
 
 
 
 @Global()
 @Module({
-    providers:[
-        ConfigService,
-        {
-            inject:[ConfigService],
-            provide:DBConnectionProvider,
-            useFactory:async(configService:ConfigService) =>{
-                const dbConnectionprovider = new DBConnectionProvider(configService)
-                return dbConnectionprovider.init();
-            }
-
-        }
+    imports:[
+        MongooseModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: async (configService: ConfigService) => getMongoConfig(configService),
+          }),
+          MongooseModule.forFeature(models),
     ],
-    exports:[DBConnectionProvider]
+    providers:[
+        // ConfigService,
+        // {
+        //     inject:[ConfigService],
+        //     provide:DBConnectionProvider,
+        //     useFactory:async(configService:ConfigService) =>{
+        //         const dbConnectionprovider = new DBConnectionProvider(configService);
+        //         return dbConnectionprovider.getDBConnection();
+        //     }
+
+        // }
+        UserDBProvider
+    ],
+    exports:[UserDBProvider,MongooseModule]
 })
 
 export class DatabaseModule{}

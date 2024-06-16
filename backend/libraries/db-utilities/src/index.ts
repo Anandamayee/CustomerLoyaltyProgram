@@ -1,4 +1,5 @@
-export { DBConnectionProvider } from "./DbInstance.provider";
+export  { UpdateUserDTO, UserDTO ,CreateUserDTO , UserLoginDTO} from "./models/Auth/User/user.dto";
+
 
 export { DatabaseModule } from "./db.module";
 
@@ -11,4 +12,3 @@ export { UserSchema } from "./models/Auth/User/user.schema";
 
 export { User } from "./models/Auth/User/user.model";
 
-export { CreateUserDTO } from "./models/Auth/User/user.dto";
