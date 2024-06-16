@@ -18,16 +18,6 @@ import { UserDBProvider } from "./dbProviders/userDBProvider";
           MongooseModule.forFeature(models),
     ],
     providers:[
-        // ConfigService,
-        // {
-        //     inject:[ConfigService],
-        //     provide:DBConnectionProvider,
-        //     useFactory:async(configService:ConfigService) =>{
-        //         const dbConnectionprovider = new DBConnectionProvider(configService);
-        //         return dbConnectionprovider.getDBConnection();
-        //     }
-
-        // }
         UserDBProvider
     ],
     exports:[UserDBProvider,MongooseModule]
