@@ -5,6 +5,7 @@ import * as cookieparser from 'cookie-parser';
 import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as fs from 'fs';
+import { ValidationPipe } from '@nestjs/common';
 
 
 async function bootstrap() {
@@ -35,12 +36,19 @@ async function bootstrap() {
     next();
   })
 
+  app.useGlobalPipes(new ValidationPipe(
+    {
+      whitelist : true,
+      forbidNonWhitelisted : true
+    }
+  ))
+
   const config = new DocumentBuilder()
                 .setTitle("Customer Loyalty backend API")
                 .setDescription("Authentication APIS")
                 .setVersion('1.0')
                 .addServer('http://localhost:3000/')
-                // .addCookieAuth('accessToken')
+                .addCookieAuth('accessToken')
                 .build();
   const document = SwaggerModule.createDocument(app,config);
   SwaggerModule.setup('auth/api',app,document);

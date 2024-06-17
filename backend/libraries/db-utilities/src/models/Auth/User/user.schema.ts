@@ -1,6 +1,5 @@
 import { Schema } from "mongoose";
 import { Role } from "./Role.enum";
-import { User } from "./user.model";
 
 
 export const UserSchema = new Schema({
@@ -18,17 +17,25 @@ export const UserSchema = new Schema({
         require:true,
     },
     DOB:{
-        type:Date,
+        type:String,
         require:false
     },
     contact:{
         type:String,
         require:true
     },
+    createdAt:{
+        type:Date,
+        require:false
+    },
+    updatedAt:{
+        type:Date,
+        require:false
+    },
     role:{
         type:String,
         enum:Role,
-        require:false
+        require:true
     }
 
 })

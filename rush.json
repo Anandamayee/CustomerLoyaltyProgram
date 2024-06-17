@@ -415,8 +415,11 @@
     },
     {
       "packageName": "db-utilities",
-      "projectFolder": "backend/libraries/db-utilities",
-      "shouldPublish" :false
+      "projectFolder": "backend/libraries/db-utilities"
+    },
+    {
+      "packageName": "user-guards",
+      "projectFolder": "backend/libraries/user-guards"
     }
 
   ]

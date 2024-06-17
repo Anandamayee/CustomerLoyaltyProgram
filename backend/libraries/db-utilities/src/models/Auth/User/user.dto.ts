@@ -16,11 +16,16 @@ export class UserDTO {
     @IsNotEmpty()
     @IsString()
     @MinLength(8)
-    @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, { message: 'Password is too weak' })
+    @Matches(/^(?=.*\d)(?=.*[@$!%*#?&])(?=.*[A-Z])(?=.*[a-z]).{8,}$/, { 
+        message: `Password ahould contain atleast 1 uppercase ,
+                  1 lowercase,
+                  1 special character amoung @$!%*#?&
+                  1 number
+                  and minimum 8 characters long` })
     password :string;
 
     @ApiProperty()
-    @IsDate()
+    @IsString()
     dob: string;
 
     @ApiProperty()

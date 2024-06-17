@@ -1,10 +1,18 @@
-import { ExceptionFilter, Module ,Catch, ArgumentsHost, HttpException, HttpStatus} from '@nestjs/common';
+import {
+  ExceptionFilter,
+  Module,
+  Catch,
+  ArgumentsHost,
+  HttpException,
+} from '@nestjs/common';
 import { AuthService } from './auth/auth.service';
 import { AuthController } from './auth/auth.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
 import * as https from 'https';
-import {DatabaseModule} from 'db-utilities';
+import { DatabaseModule } from 'db-utilities';
+import { JwtModule } from '@nestjs/jwt';
+import { UserGuardsModule } from 'user-guards';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -22,27 +30,40 @@ export class HttpExceptionFilter implements ExceptionFilter {
   }
 }
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath:"config.env",
-      isGlobal:true
+      envFilePath: 'config.env',
+      isGlobal: true,
     }),
     HttpModule.registerAsync({
-      inject:[ConfigService],
-      useFactory:(configService:ConfigService)=>{
-        return configService.get<Boolean>('LOCALHOST')?{}
-        :{ httpsAgent : new https.Agent({
-          rejectUnauthorized:false
-        })}
-      }
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        return configService.get<Boolean>('LOCALHOST')
+          ? {}
+          : {
+              httpsAgent: new https.Agent({
+                rejectUnauthorized: false,
+              }),
+            };
+      },
     }),
-    DatabaseModule
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => {
+        return {
+          secret: configService.get('JWT_SECRET'),
+          signOptions: {
+            expiresIn: 3600,
+          },
+        };
+      },
+    }),
+    UserGuardsModule,
+    DatabaseModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService
-    
-  ],
+  providers: [AuthService],
 })
 export class AuthModule {}

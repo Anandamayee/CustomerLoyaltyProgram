@@ -19,14 +19,12 @@ export class User{
     @ApiProperty()
     contact:string;
 
-    password:string;
+    @ApiProperty()
+    DOB?:String;
 
     @ApiProperty()
-    DOB?:Date;
-
-    @ApiProperty()
-    createdAt?:string;
+    createdAt?:Date;
     
     @ApiProperty()
-    updatedAt?:string;
+    updatedAt?:Date;
 }

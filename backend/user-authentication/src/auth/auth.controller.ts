@@ -1,36 +1,54 @@
-import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import {User, UserDTO , UserLoginDTO} from 'db-utilities';
-import { Request } from 'express';
+import { User, UserDTO, UserLoginDTO } from 'db-utilities';
+import { Request, Response } from 'express';
 import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { JWTGuard } from 'user-guards';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-
   @Post('/signup')
-  @ApiBody({type:UserDTO})
-  @ApiOperation({ summary: "User Signup" })
+  @ApiBody({ type: UserDTO })
+  @ApiOperation({ summary: 'User Signup' })
   @ApiResponse({
     status: 200,
-    description: "The record found",
+    description: 'The record found',
     type: [User],
   })
   public async createUser(
-    @Req() request:Request,
-    @Body() userDetails:UserDTO
-  ):Promise<User>{
-      return await this.authService.createUser(request,userDetails);
+    @Req() request: Request,
+    @Body() userDetails: UserDTO,
+  ): Promise<User> {
+    return await this.authService.createUser(request, userDetails);
   }
 
   @Post('/login')
-  @ApiResponse({status:200,type:User})
-  public async getUser(
-    @Req() request :Request,
-    @Body() userDetails:UserLoginDTO
+  @ApiResponse({ status: 200, type: User })
+  public async signInUser(
+    @Req() request: Request,
+    @Body() userDetails: UserLoginDTO,
+    @Res() response: Response,
   ): Promise<User> {
-    return await this.authService.signInUser(request,userDetails)
+    return await this.authService.signInUser(request, userDetails, response);
   }
 
-
+  @Get('/user')
+  @UseGuards(JWTGuard)
+  @ApiResponse({ status: 200, type: User })
+  public async getUser(
+    @Req() request: Request,
+    @Param() email: string,
+  ): Promise<User> {
+    return await this.authService.getUser(request, email);
+  }
 }
