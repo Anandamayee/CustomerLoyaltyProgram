@@ -3,9 +3,12 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import * as cryptoJs from 'crypto-js';
+import { Injectable, Logger } from '@nestjs/common';
 
+@Injectable()
 export class UserStratagy extends PassportStrategy(Strategy) {
-  constructor(private readonly configService: ConfigService) {
+  logger = new Logger(UserStratagy.name);
+  constructor(readonly configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {

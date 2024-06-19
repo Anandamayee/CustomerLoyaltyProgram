@@ -5,11 +5,14 @@ import { PassportModule } from '@nestjs/passport';
 import { DatabaseModule } from 'db-utilities';
 import { UserStratagy } from './user.stratagy';
 import { JWTGuard } from './user-jwt.guards';
+import { RolesGuard } from './user-role.guard';
 
 
 @Module({
   imports: [
-    PassportModule.register({ defaultStrategy: 'jwt' }),
+    PassportModule.register({
+      defaultStrategy: 'jwt'
+    }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -24,7 +27,7 @@ import { JWTGuard } from './user-jwt.guards';
     }),
     DatabaseModule
   ],
-  providers: [UserStratagy,JWTGuard],
-  exports: [PassportModule,JwtModule,UserStratagy,JWTGuard]
+  providers: [UserStratagy,JWTGuard,RolesGuard,ConfigService],
+  exports: [PassportModule,JwtModule,UserStratagy,JWTGuard,RolesGuard]
 })
 export class UserGuardsModule {}

@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AuthModule } from './auth.module';
 import { ConfigService } from '@nestjs/config';
-import * as cookieparser from 'cookie-parser';
+import * as cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as fs from 'fs';
@@ -11,6 +11,7 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AuthModule);
   const configService = app.get<ConfigService>(ConfigService);
+  app.use(cookieParser());
   if(configService.get("LOCALHOST")){
     app.enableCors({
       origin:"*",
@@ -19,7 +20,7 @@ async function bootstrap() {
       optionsSuccessStatus:204
     })
   }
-  app.use(cookieparser());
+
   app.use(
     helmet.contentSecurityPolicy({
       useDefaults:true,

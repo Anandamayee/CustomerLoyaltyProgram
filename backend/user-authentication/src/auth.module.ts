@@ -13,6 +13,7 @@ import * as https from 'https';
 import { DatabaseModule } from 'db-utilities';
 import { JwtModule } from '@nestjs/jwt';
 import { UserGuardsModule } from 'user-guards';
+import { JWTHelper } from './jwtHelper';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -64,6 +65,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
     DatabaseModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService,JWTHelper],
 })
 export class AuthModule {}

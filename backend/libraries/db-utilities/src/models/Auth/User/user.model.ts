@@ -1,30 +1,34 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { Role } from "./Role.enum";
+import { ApiProperty } from '@nestjs/swagger';
+import { Role } from './Role.enum';
 
+export class User {
+  @ApiProperty()
+  _id: string;
 
+  @ApiProperty()
+  name: string;
 
-export class User{
-    @ApiProperty()
-    _id:string;
+  @ApiProperty()
+  email: string;
 
-    @ApiProperty()
-    name:string;
+  @ApiProperty()
+  role?: Role;
 
-    @ApiProperty()
-    email:string;
+  @ApiProperty()
+  contact: string;
 
-    @ApiProperty()
-    role?:Role;
+  @ApiProperty()
+  access: string[];
 
-    @ApiProperty()
-    contact:string;
+  @ApiProperty()
+  rewardPercentage: number;
 
-    @ApiProperty()
-    DOB?:String;
+  @ApiProperty()
+  DOB?: String;
 
-    @ApiProperty()
-    createdAt?:Date;
-    
-    @ApiProperty()
-    updatedAt?:Date;
+  @ApiProperty()
+  createdAt?: Date;
+
+  @ApiProperty()
+  updatedAt?: Date;
 }

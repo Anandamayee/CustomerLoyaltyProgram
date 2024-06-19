@@ -1,18 +1,17 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Session } from 'src/models/Auth/Session/session.model';
-import { RefreshTokenSchema } from 'src/models/Auth/Session/session.schema';
+import { Session } from '../models/Auth/Session/session.model';
+import { RefreshTokenSchema } from '../models/Auth/Session/session.schema';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class JwtServiceProvisers {
   constructor(@InjectModel('Session') private readonly refreshTokenModel: Model<typeof RefreshTokenSchema>) {}
-
+  logger = new Logger(JwtServiceProvisers.name);
   public async storefreshToken(ageInMS: number, payload: string): Promise<Session | any> {
     const id = uuidv4();
     return await this.refreshTokenModel.create({
-      _id: id,
       sessionId: id.toString(),
       payload,
       validUntile: Date.now() + ageInMS
@@ -20,11 +19,15 @@ export class JwtServiceProvisers {
   }
 
   public async getSessionPayload(sessionId: string): Promise<string> {
-    const session: Session = await this.refreshTokenModel.findById(sessionId);
+    const session: Session = await this.refreshTokenModel.findOne({sessionId});
     return session?.payload;
   }
 
   public async isValidSession(sessionId: string): Promise<boolean> {
+    this.logger.log("sessionId...",sessionId)
+    this.logger.log("Date.now()...",Date.now(),"....",await this.refreshTokenModel.findOne({
+      sessionId
+    }))
     return (
       (await this.refreshTokenModel.findOne({
         sessionId,

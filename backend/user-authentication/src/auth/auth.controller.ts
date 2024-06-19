@@ -9,10 +9,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { User, UserDTO, UserLoginDTO } from 'db-utilities';
+import { Role, User, UserDTO, UserLoginDTO } from 'db-utilities';
 import { Request, Response } from 'express';
 import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { JWTGuard } from 'user-guards';
+import { JWTGuard ,Roles, RolesGuard } from 'user-guards';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -42,12 +42,13 @@ export class AuthController {
     return await this.authService.signInUser(request, userDetails, response);
   }
 
-  @Get('/user')
-  @UseGuards(JWTGuard)
+  @Get('/user/:email')
   @ApiResponse({ status: 200, type: User })
+  @Roles(Role.Basic)
+  @UseGuards(RolesGuard)
   public async getUser(
     @Req() request: Request,
-    @Param() email: string,
+    @Param('email') email: string,
   ): Promise<User> {
     return await this.authService.getUser(request, email);
   }
