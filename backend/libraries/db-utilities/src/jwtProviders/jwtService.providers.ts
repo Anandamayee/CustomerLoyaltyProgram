@@ -6,9 +6,9 @@ import { RefreshTokenSchema } from '../models/Auth/Session/session.schema';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
-export class JwtServiceProvisers {
+export class JwtServiceProviders {
   constructor(@InjectModel('Session') private readonly refreshTokenModel: Model<typeof RefreshTokenSchema>) {}
-  logger = new Logger(JwtServiceProvisers.name);
+  logger = new Logger(JwtServiceProviders.name);
   public async storefreshToken(ageInMS: number, payload: string): Promise<Session | any> {
     const id = uuidv4();
     return await this.refreshTokenModel.create({

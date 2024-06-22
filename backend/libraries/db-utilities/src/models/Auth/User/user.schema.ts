@@ -1,6 +1,7 @@
 import { Schema } from 'mongoose';
 import { Access, RewardPercentage, Role } from './Role.enum';
 import { access } from 'fs';
+import { validate } from 'class-validator';
 
 export const UserSchema = new Schema({
   name: {
@@ -14,7 +15,13 @@ export const UserSchema = new Schema({
   },
   password: {
     type: String,
-    require: true
+    validate:{
+      validator :function(v){
+        if(this.isOAuth) return true;
+        return v!=null
+      }
+    },
+    message: props => `Password is required if OAuth is false`
   },
   DOB: {
     type: String,
@@ -22,7 +29,13 @@ export const UserSchema = new Schema({
   },
   contact: {
     type: String,
-    require: true
+    validate:{
+      validator :function(v){
+        if(this.isOAuth) return true;
+        return v!=null
+      }
+    },
+    message: props => `Password is required if OAuth is false`
   },
   createdAt: {
     type: Date,
@@ -35,7 +48,13 @@ export const UserSchema = new Schema({
   role: {
     type: String,
     enum: Role,
-    require: true
+    validate:{
+      validator :function(v){
+        if(this.isOAuth) return true;
+        return v!=null
+      }
+    },
+    message: props => `Role is required if OAuth is false`
   },
   access: {
     type: [
@@ -50,5 +69,6 @@ export const UserSchema = new Schema({
     type: Number,
     require: true,
     enum: RewardPercentage
-  }
+  },
+  isOAuth: { type: Boolean, default: true }
 });

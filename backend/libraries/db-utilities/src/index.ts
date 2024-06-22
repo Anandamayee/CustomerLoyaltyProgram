@@ -1,6 +1,6 @@
 export { Session } from '@nestjs/common';
 export { RefreshTokenSchema } from './models/Auth/Session/session.schema';
-export { JwtServiceProvisers } from './jwtProviders/jwtService.providers';
+export { JwtServiceProviders } from './jwtProviders/jwtService.providers';
 export { UpdateUserDTO, UserDTO, CreateUserDTO, UserLoginDTO } from './models/Auth/User/user.dto';
 export { DatabaseModule } from './db.module';
 export { UserDBProvider } from './dbProviders/userDBProvider';

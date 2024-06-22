@@ -1,7 +1,15 @@
+import { Roles } from './user-guards.module';
 
-export { RolesGuard , Roles } from './user-role.guard';
+export { RolesGuardJWT  } from './jwt/user-role.guard';
 
-export { JWTGuard } from './user-jwt.guards';
-export { UserStratagy } from './user.stratagy';
+export { RolesGuardGoogle } from './google/google-role-guard';
+
+export { SessionSerializer } from './google/Serializer';
+
+export { GoogleStratagy } from './google/google.stratagy';
+export { GoogleGuard } from './google/user-google-guard';
+
+export { JWTGuard } from './jwt/user-jwt.guards';
+export { UserStratagy } from './jwt/user.stratagy';
 
 export * from './user-guards.module';

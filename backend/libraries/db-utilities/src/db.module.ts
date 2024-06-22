@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getMongoConfig, models } from './DbInstance.providers';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserDBProvider } from './dbProviders/userDBProvider';
-import { JwtServiceProvisers } from './jwtProviders/jwtService.providers';
+import { JwtServiceProviders } from './jwtProviders/jwtService.providers';
 
 @Global()
 @Module({
@@ -15,7 +15,16 @@ import { JwtServiceProvisers } from './jwtProviders/jwtService.providers';
     }),
     MongooseModule.forFeature(models)
   ],
-  providers: [UserDBProvider, JwtServiceProvisers],
-  exports: [UserDBProvider, MongooseModule, JwtServiceProvisers]
+  providers: [
+    {
+      provide: 'USERDB_PROVIDER',
+      useClass: UserDBProvider
+    },
+    {
+      provide: 'JWTSERVICE_PROVIDER',
+      useClass: JwtServiceProviders,
+    }
+  ],
+  exports: ['USERDB_PROVIDER', MongooseModule, 'JWTSERVICE_PROVIDER']
 })
 export class DatabaseModule {}

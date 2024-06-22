@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsEmail, IsNotEmpty, IsPhoneNumber, IsString, Matches, MinLength } from 'class-validator';
+import { IsDate, IsEmail, IsNotEmpty, IsOptional, IsPhoneNumber, IsString, Matches, MinLength, ValidateIf } from 'class-validator';
 
 export class UserDTO {
     @ApiProperty()
@@ -13,7 +13,7 @@ export class UserDTO {
     email : string;
 
     @ApiProperty()
-    @IsNotEmpty()
+    @ValidateIf((o) => !o.isOAuth)
     @IsString()
     @MinLength(8)
     @Matches(/^(?=.*\d)(?=.*[@$!%*#?&])(?=.*[A-Z])(?=.*[a-z]).{8,}$/, { 
@@ -26,12 +26,17 @@ export class UserDTO {
 
     @ApiProperty()
     @IsString()
+    @IsOptional()
     dob: string;
 
     @ApiProperty()
-    @IsNotEmpty()
+    @ValidateIf((o) => !o.isOAuth)
     @IsPhoneNumber()
     contact : string;
+
+    @ApiProperty()
+    @IsOptional()
+    isOAuth :boolean
 }
 
 export class CreateUserDTO extends UserDTO{
@@ -49,12 +54,13 @@ export class UpdateUserDTO extends UserDTO{
 
 export class UserLoginDTO {
     @ApiProperty()
-    @IsNotEmpty()
+    @ValidateIf(o => o.email === undefined && o.phone === undefined)
     @IsEmail()
     email : string;
 
     @ApiProperty()
     @IsPhoneNumber()
+    @ValidateIf(o => o.email === undefined && o.phone === undefined)
     contact : string;
 
     @ApiProperty()

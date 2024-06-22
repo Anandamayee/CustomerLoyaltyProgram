@@ -1,17 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
 import * as cryptoJs from 'crypto-js';
 import { JwtService } from '@nestjs/jwt';
 import * as ms from 'ms';
-import { JwtServiceProvisers, User, UserLoginDTO } from 'db-utilities';
+import { JwtServiceProviders, User, } from 'db-utilities';
 
 @Injectable()
 export class JWTHelper {
   constructor(
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
-    private readonly jwtServiceProvisers: JwtServiceProvisers,
+    @Inject('JWTSERVICE_PROVIDER')
+    private readonly jwtServiceProvisers: JwtServiceProviders,
   ) {}
 
   public async gnerateJWTToken(
@@ -27,6 +28,7 @@ export class JWTHelper {
       { data },
       {
         secret: this.configService.get('JWT_SECRET'),
+        expiresIn: this.configService.get('ACESS_TOKEN_AGE'),
       },
     );
     const session = await this.jwtServiceProvisers.storefreshToken(
@@ -48,7 +50,7 @@ export class JWTHelper {
       maxAge: 24 * 60 * 60 * 1000,
       secure: false,
     });
-    await response.cookie('user', JSON.stringify(user), { 
+    await response.cookie('user', JSON.stringify(user), {
       domain: request.hostname,
       httpOnly: true,
       sameSite: true,
@@ -58,7 +60,7 @@ export class JWTHelper {
     response.json({
       accessToken,
       refreshToken: session.sessionId,
-      user
+      user,
     });
   }
 }

@@ -31,4 +31,7 @@ export class User {
 
   @ApiProperty()
   updatedAt?: Date;
+
+  @ApiProperty()
+  isOAuth?:boolean;
 }

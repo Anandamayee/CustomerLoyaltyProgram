@@ -87,6 +87,61 @@
           }
         }
       }
+    },
+    "/auth/google/login": {
+      "get": {
+        "operationId": "AuthController_googleLogin",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/auth/google/redirect": {
+      "get": {
+        "operationId": "AuthController_redirectPage",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "get": {
+        "operationId": "AuthController_logout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/auth/welcome": {
+      "get": {
+        "operationId": "AuthController_landingPage",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/auth/home": {
+      "get": {
+        "operationId": "AuthController_homePage",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
     }
   },
   "info": {
@@ -127,6 +182,9 @@
           },
           "contact": {
             "type": "string"
+          },
+          "isOAuth": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -134,7 +192,8 @@
           "email",
           "password",
           "dob",
-          "contact"
+          "contact",
+          "isOAuth"
         ]
       },
       "User": {
@@ -174,6 +233,9 @@
           "updatedAt": {
             "format": "date-time",
             "type": "string"
+          },
+          "isOAuth": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -186,7 +248,8 @@
           "rewardPercentage",
           "DOB",
           "createdAt",
-          "updatedAt"
+          "updatedAt",
+          "isOAuth"
         ]
       },
       "UserLoginDTO": {

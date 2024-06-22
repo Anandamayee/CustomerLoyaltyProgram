@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, Logger } from '@nestjs/common';
 import { Request, Response } from 'express';
 import {
   User,
@@ -7,15 +7,13 @@ import {
   UserLoginDTO,
   UserDBProvider,
 } from 'db-utilities';
-import { ConfigService } from '@nestjs/config';
 import { JWTHelper } from 'src/jwtHelper';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
   constructor(
-    private readonly userDBProvider: UserDBProvider,
-    private readonly configService: ConfigService,
+    @Inject("USERDB_PROVIDER") private readonly userDBProvider: UserDBProvider,
     private readonly jWTHelper: JWTHelper,
   ) {}
 

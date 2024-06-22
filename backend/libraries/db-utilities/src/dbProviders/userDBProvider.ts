@@ -6,7 +6,6 @@ import * as bcrypt from 'bcrypt';
 import { Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Access, RewardPercentage, Role } from '../models/Auth/User/Role.enum';
-import { access } from 'fs';
 
 @Injectable()
 export class UserDBProvider {
@@ -21,15 +20,19 @@ export class UserDBProvider {
         throw new NotFoundException(`${user.email} already exist`);
       }
       const salt = await bcrypt.genSalt(this.saltOrRound);
+      this.logger.log("salt",salt)
       const newUser = {
         ...user,
-        password: await bcrypt.hash(user.password, salt),
+        password: !user.isOAuth ? await bcrypt.hash(user.password, salt) : null,
         role: Role.Basic,
         access: [Access.airline, Access.resturant, Access.retail],
         rewardPercentage: RewardPercentage.basicReward,
-        createdAt: new Date()
+        createdAt: new Date(),
+        isOAuth: user.isOAuth || false
       };
+      this.logger.log("newUser",newUser)
       const data = new this.userModel(newUser);
+      this.logger.log("data",data)
       return data.save();
     } catch (error) {
       throw error;
@@ -38,7 +41,9 @@ export class UserDBProvider {
 
   public async validateUser(user: UserLoginDTO): Promise<User> {
     try {
-      const userDetails: any = await this.userModel.findOne({ email: user.email }).exec();
+      const userDetails: any = await this.userModel
+        .findOne({ email: user.email } || { phone: user.contact })
+        .exec();
       if (!userDetails) {
         throw new NotFoundException(`${user.email} not found`);
       }

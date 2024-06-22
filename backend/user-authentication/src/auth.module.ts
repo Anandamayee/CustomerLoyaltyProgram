@@ -12,8 +12,9 @@ import { HttpModule } from '@nestjs/axios';
 import * as https from 'https';
 import { DatabaseModule } from 'db-utilities';
 import { JwtModule } from '@nestjs/jwt';
-import { UserGuardsModule } from 'user-guards';
+import { GoogleStratagy, UserGuardsModule } from 'user-guards';
 import { JWTHelper } from './jwtHelper';
+import { PassportModule } from '@nestjs/passport';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -62,9 +63,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
       },
     }),
     UserGuardsModule,
-    DatabaseModule,
+    DatabaseModule
   ],
   controllers: [AuthController],
-  providers: [AuthService,JWTHelper],
+  providers: [
+    {
+      provide : "AUTH_SERVICE",
+      useClass :AuthService
+    },
+    JWTHelper],
 })
 export class AuthModule {}

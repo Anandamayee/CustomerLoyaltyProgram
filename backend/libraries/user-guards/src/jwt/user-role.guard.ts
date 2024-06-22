@@ -1,21 +1,20 @@
-import { Logger, SetMetadata } from '@nestjs/common';
+import { Inject, Logger, SetMetadata } from '@nestjs/common';
 
-export const Roles = (...roles: string[]) => SetMetadata('roles', roles);
 
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JWTGuard } from './user-jwt.guards';
 import { JwtService } from '@nestjs/jwt';
-import { JwtServiceProvisers } from 'db-utilities';
 import { ConfigService } from '@nestjs/config';
+import { JwtServiceProviders } from 'db-utilities';
 
 @Injectable()
-export class RolesGuard extends JWTGuard implements CanActivate {
-  logger = new Logger(RolesGuard.name);
+export class RolesGuardJWT extends JWTGuard implements CanActivate {
+  logger = new Logger(RolesGuardJWT.name);
   constructor(
     private readonly reflector: Reflector,
     jwtService: JwtService,
-    jwtServiceProvisers: JwtServiceProvisers,
+    @Inject('JWTSERVICE_PROVIDER')jwtServiceProvisers: JwtServiceProviders,
     configService: ConfigService
   ) {
     super(jwtService, jwtServiceProvisers, configService);
