@@ -9,16 +9,15 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
-import * as cryptoJs from 'crypto-js';
 import { JwtServiceProviders } from 'db-utilities';
 
 @Injectable()
 export class JWTGuard extends AuthGuard('jwt') {
   logger = new Logger(JWTGuard.name);
   constructor(
-    private readonly jwtService: JwtService,
-    @Inject('JWTSERVICE_PROVIDER') private readonly jwtServiceProvisers: JwtServiceProviders,
-    private readonly configService: ConfigService
+    readonly jwtService: JwtService,
+    @Inject('JWTSERVICE_PROVIDER') readonly jwtServiceProvisers: JwtServiceProviders,
+    readonly configService: ConfigService
   ) {
     super();
   }
@@ -77,6 +76,18 @@ export class JWTGuard extends AuthGuard('jwt') {
           secure: true
         });
         response.clearCookie('user', {
+          domain: request.hostname,
+          httpOnly: false,
+          sameSite: false,
+          secure: true
+        });
+        response.clearCookie('googleAccessToken', {
+          domain: request.hostname,
+          httpOnly: false,
+          sameSite: false,
+          secure: true
+        });
+        response.clearCookie('googleRefreshToken', {
           domain: request.hostname,
           httpOnly: false,
           sameSite: false,

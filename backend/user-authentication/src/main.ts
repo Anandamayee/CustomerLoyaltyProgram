@@ -37,7 +37,7 @@ async function bootstrap() {
       secret: configService.get('SESSION_SECRET'),
       resave:false,
       cookie:{
-        maxAge:360000
+        maxAge:3600000
       }
     }),
   );

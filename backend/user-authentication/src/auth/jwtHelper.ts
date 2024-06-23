@@ -1,10 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
-import * as cryptoJs from 'crypto-js';
 import { JwtService } from '@nestjs/jwt';
 import * as ms from 'ms';
-import { JwtServiceProviders, User, } from 'db-utilities';
+import { JwtServiceProviders, User, encryptData, } from 'db-utilities';
 
 @Injectable()
 export class JWTHelper {
@@ -20,10 +19,9 @@ export class JWTHelper {
     response: Response,
     user: User,
   ) {
-    const data = cryptoJs.AES.encrypt(
-      JSON.stringify(user),
-      this.configService.get('JWT_DATA_SECRET'),
-    ).toString();
+    console.log("user....",user);
+    
+    const data = await encryptData(this.configService, 'JWT_DATA_SECRET', user);
     const accessToken = await this.jwtService.sign(
       { data },
       {
@@ -31,6 +29,7 @@ export class JWTHelper {
         expiresIn: this.configService.get('ACESS_TOKEN_AGE'),
       },
     );
+    console.log("data....",data);
     const session = await this.jwtServiceProvisers.storefreshToken(
       ms(this.configService.get('REFRESH_TOKEN_AGE')),
       data,
@@ -40,7 +39,7 @@ export class JWTHelper {
       httpOnly: true,
       sameSite: true,
       maxAge: 60 * 60 * 1000,
-      secure: false,
+      secure: true,
     });
 
     await response.cookie('refreshToken', session.sessionId, {
@@ -48,19 +47,28 @@ export class JWTHelper {
       httpOnly: true,
       sameSite: true,
       maxAge: 24 * 60 * 60 * 1000,
-      secure: false,
+      secure: true,
     });
     await response.cookie('user', JSON.stringify(user), {
       domain: request.hostname,
       httpOnly: true,
       sameSite: true,
       maxAge: 24 * 60 * 60 * 1000,
-      secure: false,
+      secure: true,
     });
-    response.json({
-      accessToken,
-      refreshToken: session.sessionId,
-      user,
+    await response.cookie('googleAccessToken',request.user['googleAccessToken'],{
+      domain: request.hostname,
+      httpOnly: true,
+      sameSite: true,
+      maxAge: 60 * 60 * 1000,
+      secure: true,
+    });
+    await response.cookie('googleRefreshToken',request.user['googleRefreshToken'],{
+      domain: request.hostname,
+      httpOnly: true,
+      sameSite: true,
+      maxAge: 24 * 60 * 60 * 1000,
+      secure: true,
     });
   }
 }

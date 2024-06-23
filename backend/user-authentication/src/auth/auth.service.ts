@@ -7,7 +7,7 @@ import {
   UserLoginDTO,
   UserDBProvider,
 } from 'db-utilities';
-import { JWTHelper } from 'src/jwtHelper';
+import { JWTHelper } from 'src/auth/jwtHelper';
 
 @Injectable()
 export class AuthService {
@@ -40,7 +40,6 @@ export class AuthService {
     try {
       const user = await this.userDBProvider?.validateUser(userDetails);
       this.logger.log("user",user);
-      
       await this.jWTHelper.gnerateJWTToken(request, response, user);
       return user;
     } catch (error) {

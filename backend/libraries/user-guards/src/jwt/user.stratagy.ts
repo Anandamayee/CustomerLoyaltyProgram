@@ -2,8 +2,8 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import * as cryptoJs from 'crypto-js';
 import { Injectable, Logger } from '@nestjs/common';
+import { decryptData } from 'db-utilities';
 
 @Injectable()
 export class UserStratagy extends PassportStrategy(Strategy) {
@@ -21,8 +21,8 @@ export class UserStratagy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    const bytes = cryptoJs.AES.decrypt(payload.data, this.configService.get('JWT_DATA_SECRET'));
-    const user = JSON.parse(bytes.toString(cryptoJs.enc.Utf8));
-    return user;
+    this.logger.log("payload...",payload)
+    const { dataObject } = await decryptData(this.configService, 'JWT_DATA_SECRET', payload.data);
+    return dataObject?.email ? payload.data : null;
   }
 }

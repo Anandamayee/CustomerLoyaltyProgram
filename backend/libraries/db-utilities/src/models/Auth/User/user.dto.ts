@@ -34,9 +34,11 @@ export class UserDTO {
     @IsPhoneNumber()
     contact : string;
 
-    @ApiProperty()
     @IsOptional()
     isOAuth :boolean
+
+    @IsOptional()
+    authStratagy: string;
 }
 
 export class CreateUserDTO extends UserDTO{

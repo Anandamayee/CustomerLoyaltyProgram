@@ -182,9 +182,6 @@
           },
           "contact": {
             "type": "string"
-          },
-          "isOAuth": {
-            "type": "boolean"
           }
         },
         "required": [
@@ -192,8 +189,7 @@
           "email",
           "password",
           "dob",
-          "contact",
-          "isOAuth"
+          "contact"
         ]
       },
       "User": {
@@ -236,6 +232,9 @@
           },
           "isOAuth": {
             "type": "boolean"
+          },
+          "authStratagy": {
+            "type": "string"
           }
         },
         "required": [
@@ -249,7 +248,8 @@
           "DOB",
           "createdAt",
           "updatedAt",
-          "isOAuth"
+          "isOAuth",
+          "authStratagy"
         ]
       },
       "UserLoginDTO": {

@@ -13,11 +13,15 @@ import { AuthService } from './auth.service';
 import { Role, User, UserDTO, UserLoginDTO } from 'db-utilities';
 import { Request, Response, response } from 'express';
 import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { Roles ,RolesGuardGoogle ,RolesGuardJWT ,GoogleGuard } from 'user-guards';
+import { Roles, RolesGuardJWT, GoogleGuard } from 'user-guards';
+import { JWTHelper } from 'src/auth/jwtHelper';
+import { log } from 'console';
+import { STATUS_CODES } from 'http';
 @Controller('auth')
 export class AuthController {
   constructor(
     @Inject('AUTH_SERVICE') private readonly authService: AuthService,
+    private readonly jWTHelper: JWTHelper,
   ) {}
 
   @Post('/signup')
@@ -49,7 +53,7 @@ export class AuthController {
   @Get('/user/:email')
   @ApiResponse({ status: 200, type: User })
   @Roles(Role.Basic)
-  @UseGuards(RolesGuardGoogle, RolesGuardJWT)
+  @UseGuards(RolesGuardJWT)
   public async getUser(
     @Req() request: Request,
     @Param('email') email: string,
@@ -59,7 +63,6 @@ export class AuthController {
 
   @Get('/google/login')
   @ApiResponse({ status: 200 })
-  // @Roles(Role.Basic)
   @UseGuards(GoogleGuard)
   public async googleLogin(@Req() request: Request): Promise<any> {
     return 'Hey Google';
@@ -67,13 +70,17 @@ export class AuthController {
 
   @Get('/google/redirect')
   @ApiResponse({ status: 200 })
-  // @Roles(Role.Basic)
   @UseGuards(GoogleGuard)
   public async redirectPage(
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<any> {
-    response.redirect('/auth/welcome');
+    await this.jWTHelper.gnerateJWTToken(
+      request,
+      response,
+      request.user['payload'] as User,
+    );
+    return response.json({ statusCode: 200 });
   }
 
   @Get('logout')
@@ -87,15 +94,19 @@ export class AuthController {
   }
 
   @Get('/welcome')
+  @Roles(Role.Basic)
+  @UseGuards(RolesGuardJWT)
   @ApiResponse({ status: 200 })
   landingPage(@Req() req: Request, @Res() res: Response) {
-    return 'Welcome to LoyaltyProgram!!';
+    return res.json({
+      statusCode : 200,
+      msg :"'Welcome to LoyaltyProgram!!'"
+    });
   }
+
   @Get('/home')
   @ApiResponse({ status: 200 })
-  @Roles(Role.Basic)
-  @UseGuards(RolesGuardGoogle, RolesGuardJWT)
   homePage(@Req() req: Request, @Res() res: Response) {
-    return 'Hey !! Please login';
+   return res.json("Please login")
   }
 }

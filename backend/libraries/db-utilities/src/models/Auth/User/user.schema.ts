@@ -15,13 +15,13 @@ export const UserSchema = new Schema({
   },
   password: {
     type: String,
-    validate:{
-      validator :function(v){
-        if(this.isOAuth) return true;
-        return v!=null
+    validate: {
+      validator: function (v) {
+        if (this.isOAuth) return true;
+        return v != null;
       }
     },
-    message: props => `Password is required if OAuth is false`
+    message: (props) => `Password is required if OAuth is false`
   },
   DOB: {
     type: String,
@@ -29,13 +29,13 @@ export const UserSchema = new Schema({
   },
   contact: {
     type: String,
-    validate:{
-      validator :function(v){
-        if(this.isOAuth) return true;
-        return v!=null
+    validate: {
+      validator: function (v) {
+        if (this.isOAuth) return true;
+        return v != null;
       }
     },
-    message: props => `Password is required if OAuth is false`
+    message: (props) => `Password is required if OAuth is false`
   },
   createdAt: {
     type: Date,
@@ -48,13 +48,13 @@ export const UserSchema = new Schema({
   role: {
     type: String,
     enum: Role,
-    validate:{
-      validator :function(v){
-        if(this.isOAuth) return true;
-        return v!=null
+    validate: {
+      validator: function (v) {
+        if (this.isOAuth) return true;
+        return v != null;
       }
     },
-    message: props => `Role is required if OAuth is false`
+    message: (props) => `Role is required if OAuth is false`
   },
   access: {
     type: [
@@ -70,5 +70,6 @@ export const UserSchema = new Schema({
     require: true,
     enum: RewardPercentage
   },
-  isOAuth: { type: Boolean, default: true }
+  isOAuth: { type: Boolean, default: true },
+  authStratagy: { type: String, require: true }
 });

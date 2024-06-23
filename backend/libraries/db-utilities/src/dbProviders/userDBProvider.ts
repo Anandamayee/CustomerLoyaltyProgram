@@ -5,7 +5,7 @@ import { CreateUserDTO, UserLoginDTO } from 'src/models/Auth/User/user.dto';
 import * as bcrypt from 'bcrypt';
 import { Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Access, RewardPercentage, Role } from '../models/Auth/User/Role.enum';
+import { Access, AuthStratagy, RewardPercentage, Role } from '../models/Auth/User/Role.enum';
 
 @Injectable()
 export class UserDBProvider {
@@ -20,7 +20,7 @@ export class UserDBProvider {
         throw new NotFoundException(`${user.email} already exist`);
       }
       const salt = await bcrypt.genSalt(this.saltOrRound);
-      this.logger.log("salt",salt)
+      this.logger.log('salt', salt);
       const newUser = {
         ...user,
         password: !user.isOAuth ? await bcrypt.hash(user.password, salt) : null,
@@ -28,11 +28,12 @@ export class UserDBProvider {
         access: [Access.airline, Access.resturant, Access.retail],
         rewardPercentage: RewardPercentage.basicReward,
         createdAt: new Date(),
-        isOAuth: user.isOAuth || false
+        isOAuth: user.isOAuth || false,
+        authStratagy: !user.isOAuth ? AuthStratagy.jwt : user.authStratagy
       };
-      this.logger.log("newUser",newUser)
+      this.logger.log('newUser', newUser);
       const data = new this.userModel(newUser);
-      this.logger.log("data",data)
+      this.logger.log('data', data);
       return data.save();
     } catch (error) {
       throw error;

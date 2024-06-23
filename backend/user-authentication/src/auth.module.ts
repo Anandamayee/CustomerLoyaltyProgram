@@ -13,7 +13,7 @@ import * as https from 'https';
 import { DatabaseModule } from 'db-utilities';
 import { JwtModule } from '@nestjs/jwt';
 import { GoogleStratagy, UserGuardsModule } from 'user-guards';
-import { JWTHelper } from './jwtHelper';
+import { JWTHelper } from './auth/jwtHelper';
 import { PassportModule } from '@nestjs/passport';
 
 @Catch()

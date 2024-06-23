@@ -7,9 +7,8 @@ import { UserStratagy } from './jwt/user.stratagy';
 import { JWTGuard } from './jwt/user-jwt.guards';
 import { GoogleStratagy } from './google/google.stratagy';
 import { GoogleGuard } from './google/user-google-guard';
-import { SessionSerializer } from './google/Serializer';
-import { RolesGuardGoogle } from './google/google-role-guard';
 import { RolesGuardJWT } from './jwt/user-role.guard';
+import { SessionSerializer } from './google/Serializer';
 
 
 export const Roles = (...roles: string[]) => SetMetadata('roles', roles);
@@ -31,7 +30,9 @@ export const Roles = (...roles: string[]) => SetMetadata('roles', roles);
     }),
     DatabaseModule
   ],
-  providers: [UserStratagy,JWTGuard,RolesGuardGoogle,ConfigService,GoogleStratagy,RolesGuardJWT,GoogleGuard,SessionSerializer],
-  exports: [PassportModule,JwtModule,UserStratagy,JWTGuard,RolesGuardGoogle,RolesGuardJWT,GoogleStratagy,GoogleGuard,SessionSerializer]
+  providers: [UserStratagy,JWTGuard,ConfigService,GoogleStratagy,RolesGuardJWT,GoogleGuard,
+    SessionSerializer
+    ],
+  exports: [PassportModule,JwtModule,UserStratagy,JWTGuard,RolesGuardJWT,GoogleStratagy,GoogleGuard,SessionSerializer]
 })
 export class UserGuardsModule {}

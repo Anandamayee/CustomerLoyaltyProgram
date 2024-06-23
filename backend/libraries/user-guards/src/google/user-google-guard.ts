@@ -1,5 +1,4 @@
 import {
-  BadGatewayException,
   ExecutionContext,
   Injectable,
   Logger,
@@ -21,7 +20,6 @@ export class GoogleGuard extends AuthGuard('google') {
         throw new UnauthorizedException();
       }
       const request = context.switchToHttp().getRequest();
-      this.logger.log('request....', request);
       await super.logIn(request);
       return true;
     } catch (error) {

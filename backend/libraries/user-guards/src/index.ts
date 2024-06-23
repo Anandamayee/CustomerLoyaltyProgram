@@ -1,8 +1,7 @@
-import { Roles } from './user-guards.module';
+export { Roles } from './user-guards.module';
 
 export { RolesGuardJWT  } from './jwt/user-role.guard';
 
-export { RolesGuardGoogle } from './google/google-role-guard';
 
 export { SessionSerializer } from './google/Serializer';
 
