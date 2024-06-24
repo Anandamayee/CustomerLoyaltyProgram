@@ -4,6 +4,9 @@
 Architecture Overview
 
 
+![ZLHTJuCm57tdLpG-QQBPFp1kytkWw3HxMFPm1rVM37gNjgXe_E-sR2g5iiW3eVVZdDlJKywK1gdB8W-23IHho90THC05crPAOt70FWDcdda88kKYOx6fM6n3pmebYoMzy7mNgb-_CCDIhr1ede3c90PsIP9_rAiVt1hetgQEsUtiQGlpvGEBRzWLQ7o3okczoxXu7qn8PFszOoeACZj2-SeJL4x_k5IQ2hEHQRdPaDIBlrGCLM7cRqH2gY3](https://github.com/Anandamayee/CustomerLoyaltyProgram/assets/25376748/ecc67d97-3b0f-4c5a-ae1d-130743cb96e5)
+
+
                                       +-----------------------+
                                       |  Landing Page         |
                                       +----------+------------+
