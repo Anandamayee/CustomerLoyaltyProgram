@@ -7,40 +7,6 @@ Architecture Overview
 ![ZLHTJuCm57tdLpG-QQBPFp1kytkWw3HxMFPm1rVM37gNjgXe_E-sR2g5iiW3eVVZdDlJKywK1gdB8W-23IHho90THC05crPAOt70FWDcdda88kKYOx6fM6n3pmebYoMzy7mNgb-_CCDIhr1ede3c90PsIP9_rAiVt1hetgQEsUtiQGlpvGEBRzWLQ7o3okczoxXu7qn8PFszOoeACZj2-SeJL4x_k5IQ2hEHQRdPaDIBlrGCLM7cRqH2gY3](https://github.com/Anandamayee/CustomerLoyaltyProgram/assets/25376748/ecc67d97-3b0f-4c5a-ae1d-130743cb96e5)
 
 
-                                      +-----------------------+
-                                      |  Landing Page         |
-                                      +----------+------------+
-                                                 |
-+-----------------------+   +--------------------+--------------------+   +-----------------------+
-|  Authentication/      |   |                    |                    |   |  User Profile         |
-|  Authorization        |   |                    |                    |   +----------+------------+
-|  (OAuth, JWT)         |   |                    |                    |              |
-+----------+------------+   |                    |                    |              |
-           |                |                    |                    |              |
-           |                |                    |                    |              |
-+----------v------------+   +---------v----------v--------+   +-------v-------------+---+
-|  API Gateway          |   |   Common Services          |   |   Microservices          |
-|  (Nginx/Kong)         |   |   (Customer Support,       |   |                          |
-+----------+------------+   |   Payment, Loyalty Wallet) |   | +---------------------+  |
-           |                +---------+----------+-------+   | |  Grocery            |  |
-           |                          |          |           | +---------------------+  |
-+----------v------------+   +---------v------+  +v---------+ | |  Medicine           |  |
-|  Load Balancer        |   |      Cache     |  |  Message | | +---------------------+  |
-|  (HAProxy, Nginx)     |   | (Redis/Memcached)|  Broker   | | |  Flight             |  |
-+----------+------------+   +---------+------+  (RabbitMQ) | | +---------------------+  |
-           |                          |          |           | |  Loyalty Store      |  |
-+----------v------------+   +---------v----------v--------+ | +---------------------+  |
-|  Kubernetes           |   |    Databases (MongoDB)      | |                          |
-|  Cluster              |   +---------+----------+--------+ +--------------------------+
-|  (Microservice Pods)  |             |          |
-+-----------------------+   +---------v----------v--------+
-                                      |          |
-                             +--------v--+  +----v--------+
-                             |  Monitoring|  | Logging    |
-                             |  (Prometheus)| (ELK Stack) |
-                             +-------------+  +-----------+
-
-
 2. System Flow
         User Authentication & Authorization:
         Users access the landing page and log in via OAuth.
@@ -62,25 +28,12 @@ Deployment & Monitoring:
         Services are containerized using Docker and orchestrated using Kubernetes.
         System health and performance are monitored using Prometheus.
         Logs are collected and analyzed using the ELK stack (Elasticsearch, Logstash, Kibana).
+   
 
-         +-----------------+      +-----------------+     +-----------------+     +-----------------+
-      | User Interface  |      |  API Gateway    |     | Load Balancer   |     |  Microservices  |
-      | (React)         |----->| (Nginx/Kong)    |---->| (HAProxy)       |---->| (NestJS)        |
-      +-----------------+      +-----------------+     +-----------------+     +-----------------+
-             |                        |                       |                        |
-             |                        |                       |                        |
-+------------v------------+   +-------v----------+    +-------v----------+    +-------v----------+
-| Authentication Service  |   | Cache Service    |    | Message Broker   |    | Specific Service  |
-| (OAuth, JWT)            |   | (Redis)          |    | (RabbitMQ)       |    | (Grocery, etc.)  |
-+-------------------------+   +------------------+    +------------------+    +------------------+
-             |                        |                       |                        |
-+------------v------------+   +-------v----------+    +-------v----------+    +-------v----------+
-| User Profile Service    |   |  Payment Service |    | Loyalty Wallet   |    | Customer Support |
-+-------------------------+   +------------------+    +------------------+    +------------------+
-             |                        |                       |                        |
-+------------v------------+   +-------v----------+    +-------v----------+    +-------v----------+
-| Database (MongoDB)      |   | Monitoring       |    | Logging          |    | Landing Page     |
-+-------------------------+   +------------------+    +------------------+    +------------------+
+   ![imagesss](https://github.com/Anandamayee/CustomerLoyaltyProgram/assets/25376748/25a930b8-500b-48f1-9193-b10f447aa6ba)
+
+
+    
 
 
 4. Tech Stack Recommendations
